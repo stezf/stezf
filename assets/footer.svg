@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 120" width="100%" preserveAspectRatio="xMidYMid meet">
+  <!-- Footer. Derived from assets/header.svg: same base (background gradient,
+       sparks, waves and edge feathering) but INVERTED and THINNER.
+
+       What "INVERTED" means:
+         - the header gradient runs left to right (dark navy left, brand blue
+           right); here x1=1 x2=0 flips it, so blue lands on the left. It is the
+           banner mirrored.
+         - the header fades DOWNWARD (opaque top, transparent bottom); here it is
+           transparent at the top, opaque in the middle and fading again at the
+           last edge, hence two stops where the header had one.
+
+       THINNER: 120 tall vs the header's 310, so only four waves instead of six,
+       with smaller circles. At the header's density the footer would look like a
+       squashed header instead of a strip.
+
+       It carries NO text: the last strip's content is the visit counter, which
+       sits just above it in the README. If text is ever added here, the natural
+       spot is y=82 with text-anchor="middle" at x=750.
+
+       The masks nest (one lateral, one vertical) and multiply, like in the
+       header, which is why the corner feathering adds up. -->
+  <defs>
+    <style>
+      /* Wave: travels 2000px left to right */
+      .wave{
+        animation-name: wave;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+      @keyframes wave{
+        from{transform:translateX(0);}
+        to  {transform:translateX(2000px);}
+      }
+      /* Vertical breathing, gentler than in the header */
+      .bob{
+        transform-box: fill-box;
+        transform-origin: center;
+        animation-name: bob;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+      }
+      @keyframes bob{
+        0%,100%{transform:translateY(0)      scale(1);}
+        50%    {transform:translateY(-22px) scale(1.06);}
+      }
+      /* Spark blinking */
+      .fadein{
+        animation-name: fadein;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+      }
+      @keyframes fadein{
+        0%,100%{opacity:.25;}
+        50%    {opacity:.85;}
+      }
+    </style>
+
+    <!-- Background. x1/x2 inverted vs the header: it fades blue to navy
+         instead of navy to blue. -->
+    <linearGradient id="foot-bg" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="1%"   stop-color="rgb(19, 17, 47)"/>
+      <stop offset="99%"  stop-color="rgb(68, 126, 219)"/>
+    </linearGradient>
+
+    <!-- Sides: transparent at the edges, opaque in the center -->
+    <linearGradient id="foot-lateral" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="1%"   stop-color="white" stop-opacity=".020"/>
+      <stop offset="40%"  stop-color="white" stop-opacity=".5"/>
+      <stop offset="60%"  stop-color="white" stop-opacity="1"/>
+      <stop offset="99%" stop-color="white" stop-opacity=".3"/>
+    </linearGradient>
+
+    <!-- Vertical: faded at the top, opaque in the center, faded at the bottom -->
+    <linearGradient id="foot-vertical" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="white" stop-opacity="0"/>
+      <stop offset="32%"  stop-color="white" stop-opacity=".57"/>
+      <stop offset="62%"  stop-color="white" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="white" stop-opacity="1"/>
+    </linearGradient>
+
+    <mask id="foot-mask-lateral">
+      <rect width="1500" height="120" fill="url(#foot-lateral)"/>
+    </mask>
+    <mask id="foot-mask-vertical">
+      <rect width="1500" height="120" fill="url(#foot-vertical)"/>
+    </mask>
+
+    <!-- Main spark: the same one as the header -->
+    <radialGradient id="foot-spark-main">
+      <stop offset="0%"   stop-color="#dbe8ff" stop-opacity="0.95"/>
+      <stop offset="14%"  stop-color="#8fb8ff" stop-opacity="0.5"/>
+      <stop offset="30%"  stop-color="#568eff" stop-opacity="0.42"/>
+      <stop offset="72%"  stop-color="#568eff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#568eff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ambient halo -->
+    <radialGradient id="foot-spark-halo">
+      <stop offset="1%"   stop-color="#568eff" stop-opacity="0.38"/>
+      <stop offset="50%"  stop-color="#568eff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#568eff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Blurs. The header's (46, 42, 20) are absolute pixels and cannot be
+         copied as is: in a 120 tall strip instead of 310 they come out twice as
+         strong and the footer turns into a smudge. Scaled by the same ratio:
+           46 * 120/310 = 17.8 -> 18
+           42 * 120/310 = 16.3 -> 16
+           20 * 120/310 =  7.7 ->  8 -->
+    <filter id="foot-banner-blur" x="-50%" y="-120%" width="150%" height="300%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <filter id="foot-wave-blur" x="-95%" y="-95%" width="250%" height="250%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+    <filter id="foot-spark-blur" x="-90%" y="-90%" width="220%" height="220%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+  </defs>
+
+  <g mask="url(#foot-mask-lateral)">
+   <g mask="url(#foot-mask-vertical)">
+    <g filter="url(#foot-banner-blur)">
+      <rect x="-80" y="-80" width="1660" height="280" fill="url(#foot-bg)"/>
+      <!-- Four waves. The header has six; these four fit in 120 without
+           overlapping. Negative delays spread them out of phase so they do not
+           pulse together. -->
+      <g class="wave" style="animation-duration:14s; animation-delay:-11.2s;" opacity="0.8">
+        <g class="bob" style="animation-duration:10s;">
+          <circle class="fadein" style="animation-duration:10s;" cx="-260" cy="30"  r="140" fill="url(#foot-spark-main)" filter="url(#foot-wave-blur)"/>
+        </g>
+      </g>
+      <g class="wave" style="animation-duration:16s; animation-delay:-3.1s;" opacity="0.75">
+        <g class="bob" style="animation-duration:12s; animation-delay:-4s;">
+          <circle class="fadein" style="animation-duration:12s;" cx="-260" cy="140" r="125" fill="url(#foot-spark-main)" filter="url(#foot-wave-blur)"/>
+        </g>
+      </g>
+      <g class="wave" style="animation-duration:15s; animation-delay:-8.4s;" opacity="0.6">
+        <g class="bob" style="animation-duration:13s; animation-delay:-9s;">
+          <circle class="fadein" style="animation-duration:13s;" cx="-260" cy="85"  r="160" fill="url(#foot-spark-main)" filter="url(#foot-wave-blur)"/>
+        </g>
+      </g>
+      <g class="wave" style="animation-duration:18s; animation-delay:-14.7s;" opacity="0.5">
+        <g class="bob" style="animation-duration:15s; animation-delay:-13s;">
+          <circle class="fadein" style="animation-duration:15s;" cx="-260" cy="185" r="115" fill="url(#foot-spark-main)" filter="url(#foot-wave-blur)"/>
+        </g>
+      </g>
+      <!-- Ambient veil, more discreet than the header's -->
+      <g opacity="0.08">
+        <circle cx="140"  cy="45"  r="115" fill="url(#foot-spark-halo)"/>
+        <circle cx="760"  cy="100" r="125" fill="url(#foot-spark-halo)"/>
+        <circle cx="1380" cy="40"  r="118" fill="url(#foot-spark-halo)"/>
+      </g>
+    </g>
+    <!-- More detailed core -->
+    <g filter="url(#foot-spark-blur)" opacity="0.28">
+      <g class="wave" style="animation-duration:14s; animation-delay:-11.2s;">
+        <circle cx="-260" cy="40"  r="70" fill="#568eff"/>
+      </g>
+      <g class="wave" style="animation-duration:16s; animation-delay:-3.1s;">
+        <circle cx="-260" cy="120" r="62" fill="#568eff"/>
+      </g>
+      <g class="wave" style="animation-duration:15s; animation-delay:-8.4s;">
+        <circle cx="-260" cy="75"  r="78" fill="#568eff"/>
+      </g>
+      <g class="wave" style="animation-duration:18s; animation-delay:-14.7s;">
+        <circle cx="-260" cy="165" r="58" fill="#568eff"/>
+      </g>
+    </g>
+   </g>
+  </g>
+</svg>

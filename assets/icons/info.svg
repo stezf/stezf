@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <g fill="#bdcaf0" fill-opacity="0.98">
+    <!-- Dot -->
+    <circle cx="77" cy="17" r="16"/>
+    <!-- Body of the italic serif "i", with its tail -->
+    <path d="M46 63
+             C52 55 62 48 76 46
+             L79 47
+             C70 70 62 90 60 102
+             C59 108 63 109 70 105
+             C80 100 88 92 96 88
+             C98 90 96 94 92 100
+             C82 118 62 126 48 114
+             C40 107 44 95 52 78
+             C56 68 52 66 46 63 Z"/>
+  </g>
+</svg>

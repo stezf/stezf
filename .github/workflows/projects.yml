@@ -1,0 +1,77 @@
+# Regenerates assets/projects.svg with fresh data from the GitHub API.
+#
+# WHY THIS WORKFLOW EXISTS: the README is served as sanitized HTML, with no
+# <script> and no style=, and an SVG in <img> renders in restricted mode. The
+# profile cannot query the API, so the data is fetched here and baked into the
+# SVG, which the README can load.
+#
+# What it does, in order:
+#   1. checkout
+#   2. python scripts/gen_projects.py   (stdlib only, no pip install needed)
+#   3. commit the change if the SVG changed
+#
+# If step 2 fails, step 3 does not run and the SVG already in the repo stays as
+# it is: showing week-old data beats leaving the section empty.
+
+name: Actualizar proyectos
+
+on:
+  schedule:
+    # Mondays at 06:17 UTC. The odd minute is deliberate: GitHub crons fire on
+    # the hour, and 00:00 UTC is the most congested queue of the day.
+    - cron: "17 6 * * 1"
+  # To force a run from the Actions tab.
+  workflow_dispatch:
+  # Whenever a template or the generator changes, so a design change shows in
+  # the profile without waiting for Monday.
+  push:
+    paths:
+      - scripts/gen_projects.py
+      - scripts/projects.template.svg
+      - scripts/gen_stats.py
+      - scripts/stats.template.svg
+      - scripts/text-metrics.json
+
+permissions:
+  contents: write
+
+# If two runs overlap (a push to this workflow triggers another), the second
+# one waits instead of clashing.
+concurrency:
+  group: actualizar-proyectos
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Regenerar el SVG de proyectos
+        env:
+          # The default token raises the API limit from 60 to 5000 requests/hour.
+          # Not needed for the free tier at 3 requests/week, but it leaves room
+          # to force several runs in a row while tuning the design.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/gen_projects.py
+
+      - name: Regenerar el SVG de estadisticas
+        # No token needed: the contributions graph is read from GitHub's own
+        # site, which answers unauthenticated. Hence no env in this step.
+        run: python scripts/gen_stats.py
+
+      - name: Commitear si algun SVG cambio
+        run: |
+          if git diff --quiet -- assets/projects.svg assets/stats.svg; then
+            echo "Ningun SVG cambio: no hay nada que commitear."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/projects.svg assets/stats.svg
+          git commit -m "chore: actualizar datos de repos y actividad"
+          git push

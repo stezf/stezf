@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="65 -50 1500 710" width="100%" preserveAspectRatio="xMidYMid meet">
+  <!-- Code panel, centered by coordinates instead of align="center". Same
+       system as header.svg / rule.svg / about-title.svg: a 1500 wide viewBox
+       with the panel drawn centered at x=750, so the image can be width="100%"
+       and still land centered without depending on the HTML.
+
+       GitHub sanitizes inline style=, so a ``` block cannot be painted in
+       #568eff: GitHub's highlighting uses its own palette. As an image the
+       colors are exact and match the banner:
+         key      #7aa5ff  (the #568eff brand blue lightened for dark backgrounds)
+         value    #cddafffa (same as the banner title)
+         punct    #66709c  (blue-grey, so the structure does not shout)
+
+       MEASUREMENTS: the panel is 1120 of 1500 -> 75% of the width, about 664px
+       on an 890px column. The text is centered inside it: the longest line
+       ("role", 47 chars) takes ~874 units, leaving ~88 on each side (52px real).
+
+       EDITING: lines are <tspan x="313" dy="48"> inside a single <text>, so
+       adding or removing a line does not break the spacing. When adding lines,
+       also raise the viewBox and <rect> height (+48 per line). -->
+
+  <style>
+    .mono{ font-family: ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, Consolas,
+           'DejaVu Sans Mono', monospace; font-size: 31px; }
+    .k{ fill: #7aa5ff; }      /* key */
+    .s{ fill: #cddafffa; }    /* value */
+    .p{ fill: #66709c; }      /* { } [ ] : , */
+    .f{ fill: #8b96bd; font-size: 26px; }
+  </style>
+
+  <defs>
+    <!-- Ambient shadow, in the same tone as the banner (#030618). The canvas is
+         639 tall for a 526 panel: that margin is what lets the blur (3 sigma =
+         48 units) fit without the shadow being cut by the image edge. Region in
+         userSpaceOnUse to control the filter area explicitly. -->
+    <filter id="card-shadow" filterUnits="userSpaceOnUse"
+            x="130" y="-60" width="1350" height="680">
+      <feDropShadow dx="0" dy="10" stdDeviation="16"
+                    flood-color="#030618" flood-opacity=".27"/>
+    </filter>
+  </defs>
+
+  <!-- panel: centered at x=750 (750 - 1120/2 = 190) -->
+  <rect x="190.5" y="1.5" width="1250" height="586" rx="25"
+        fill="#1b203b" stroke="#568eff" stroke-opacity=".3"
+        filter="url(#card-shadow)"/>
+
+  <!-- terminal-style header -->
+  <line x1="191" y1="79" x2="1450" y2="79" stroke="#568eff" stroke-opacity=".18"/>
+  <circle cx="234" cy="39" r="9" fill="#568eff" fill-opacity=".9"/>
+  <circle cx="274" cy="39" r="9" fill="#568eff" fill-opacity=".6"/>
+  <circle cx="314" cy="39" r="9" fill="#568eff" fill-opacity=".35"/>
+  <text class="mono f" x="353" y="48">aboutme.json</text>
+
+  <!-- Content: one <text> per JSON line, with xml:space="preserve". That
+       attribute is essential: without it SVG collapses the two indent spaces
+       into one and the JSON looks crooked. Each <text> also sits on its own
+       file line, because a newline inside <text> renders as a space. Every line
+       adds 48 of height. -->
+  <text class="mono" x="313" y="144" xml:space="preserve"><tspan class="p">{</tspan></text>
+  <text class="mono" x="313" y="192" xml:space="preserve">  <tspan class="k">"user"</tspan><tspan class="p">: </tspan><tspan class="s">"Stezf"</tspan><tspan class="p">,</tspan></text>
+  <text class="mono" x="313" y="240" xml:space="preserve">  <tspan class="k">"role"</tspan><tspan class="p">: </tspan><tspan class="s">"Backend &amp; System Design Developer"</tspan><tspan class="p">,</tspan></text>
+  <text class="mono" x="313" y="288" xml:space="preserve">  <tspan class="k">"learning"</tspan><tspan class="s">: [C, Rust, Astro, Qt Quick],</tspan></text>
+  <text class="mono" x="313" y="336" xml:space="preserve">  <tspan class="k">"currently-focus"</tspan><tspan class="p">: </tspan><tspan class="s">"GlaceShell"</tspan><tspan class="p">,</tspan></text>
+  <text class="mono" x="313" y="384" xml:space="preserve">  <tspan class="k">"status"</tspan><tspan class="p">: </tspan><tspan class="s">"allways learning something new"</tspan><tspan class="p">,</tspan></text>
+  <text class="mono" x="313" y="432" xml:space="preserve">  <tspan class="k">"machine"</tspan><tspan class="p">: </tspan><tspan class="s">"AMD Ryzen 5 8600G w/ 760M"</tspan><tspan class="p">,</tspan></text>
+  <text class="mono" x="313" y="480" xml:space="preserve">  <tspan class="k">"tastes"</tspan><tspan class="p">: </tspan><tspan class="s">[Ricing, Hardware, Metrics, Tecnology]</tspan></text>
+  <text class="mono" x="313" y="528" xml:space="preserve"><tspan class="p">}</tspan></text>
+</svg>

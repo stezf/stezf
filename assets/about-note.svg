@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 145" width="100%" preserveAspectRatio="xMidYMid meet">
+  <!-- The About Me bullet, converted to SVG.
+
+       It used to be a <ul style="font-size: 20px; line-height: 1.5;"> in the
+       README, but GitHub REMOVES the style= attribute from README HTML (verified
+       with the API's POST /markdown), so it rendered at 16px instead of 20px.
+       Inside an SVG the color and size do work.
+
+       MEASUREMENTS (getComputedTextLength, not by eye):
+         font 30px -> ~18px real on an 890px column
+         indent  x=44 for the text, like the about-list.svg list, bullet at x=0
+         lines  3, line height 45 (1.5 x 30)
+         width  1125.3 / 1145.5 / 628.6, within the 1150 maximum
+         SVG has no automatic line breaking: the breaks are written by hand, so
+         changing the text means recomputing them.
+
+         The original <b> is kept in the lead-in, in brand blue, and the rest in
+         the theme's text color. -->
+
+  <style>
+    .t{
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 30px;
+      font-weight: 400;
+      fill: #1f2328;
+    }
+    .lead{ font-weight: 700; fill: #568eff; }
+    .bul{ fill: #568eff; font-size: 26px; }
+    @media (prefers-color-scheme: dark){
+      .t{ fill: #e6edf3; }
+      .lead, .bul{ fill: #bdcaf0fa;
+                   font-size: 35px;
+                 }
+    }
+  </style>
+
+  <text class="t bul" x="62" y="36">•</text>
+
+  <text class="t" x="104" y="38"><tspan class="lead">🧠 Building to Learn, Sharing to Grow: </tspan><tspan>I am fascinated by building systems that solve</tspan></text>
+  <text class="t" x="104" y="83">a real problem or provide considerable interest as learning, both personally and for the</text>
+  <text class="t" x="104" y="128">Open-source community on a self-taught basis!</text>
+</svg>

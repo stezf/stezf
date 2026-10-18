@@ -1,0 +1,331 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 310" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <style>
+      /* Light Wave */
+      .wave{
+        animation-name: wave;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+      @keyframes wave{
+        from{transform:translateX(0);}
+        to  {transform:translateX(2000px);}
+      }
+
+      /* vertical breathing: up and down */
+      .bob{
+        transform-box: fill-box;
+        transform-origin: center;
+        animation-name: bob;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+      }
+      @keyframes bob{
+        0%,100%{transform:translateY(0)      scale(1);}
+        50%    {transform:translateY(-38px) scale(1.08);}
+      }
+
+      .fadein{
+        animation-name: fadein;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+      }
+      @keyframes fadein{
+        0%,100%{opacity:.25;}
+        50%    {opacity:.85;}
+      }
+
+      /*  ---- Schedule of a shift (30s cycle, shift every 5s) ----
+            0.0%  the cursor appears only  (input pause)
+            1.2%  start writing            (2.34s, ~70ms per letter)
+            9.0%  finish writing
+           15.0%  start erasing            (mantain 1.8s)
+           16.2%  finish erasing           (0.66s gap)
+         */
+
+      /* Turn of each text in the cycle (30s).
+         --d = enter moment;  --w = real text width (textLength) */
+      .s0 { --d:   0s; --w: 396px; }   /* description                */
+      .s1 { --d: -25s; --w: 298px; }   /* Linux Ricing Development    */
+      .s2 { --d: -20s; --w: 330px; }   /* CI/CD Pipeline + Automation*/
+      .s3 { --d: -15s; --w: 305px; }   /* Spec-Driven Development     */
+      .s4 { --d: -10s; --w: 228px; }   /* Reverse Engineering         */
+      .s5 { --d:  -5s; --w: 265px; }   /* AI-Assisted Engineering     */
+
+      /* 1) clipping: grows letter by letter up to the width of the text */
+
+      .type-clip{
+        animation: type-reveal 30s infinite;
+        animation-delay: var(--d);
+      }
+      @keyframes type-reveal{
+        0%        { width: 0;         animation-timing-function: steps(var(--n), end); }
+        1.2%      { width: 0;         animation-timing-function: steps(var(--n), end); }
+        9%        { width: var(--w);  animation-timing-function: step-end; }
+        15%       { width: var(--w);  animation-timing-function: ease-out; }
+        16.2%,100%{ width: 0; }
+      }
+
+      /* 2) entry fade only: there is NO exit fade,
+            the text is erased by the cursor itself (see 3),
+            so it has to stay fully opaque while it is being erased. */
+      .glow{
+        filter: drop-shadow(0 2px 3px rgba(3, 6, 24, 0.5)) drop-shadow(0 0 12px rgba(3, 6, 24, 0.4));
+        animation: type-fade 30s ease-in-out infinite;
+        animation-delay: var(--d);
+      }
+      @keyframes type-fade{
+        0%           { opacity: 0; }
+        1.5%, 100%   { opacity: 1; }
+      }
+
+      /* 3) the cursor: leaves the beginning, accompanies the writing, comes
+        back erasing the text, and leaves.
+        The path is derived from the width itself (--w + 2),
+        so never it may be out of date with the text.
+        NOTE: the timing-function goes in EVERY keyframe that opens an interval,
+        and you have to repeat transform: if the keyframe only declares visibility,
+        Chromium does not apply steps() to the interval and the cursor goes faster
+        than the text.
+        The erase shares the 15% -> 16.2% interval and the ease-out with the
+        clip (see 1), so the cursor is always 2px ahead of the cut edge. */
+
+      .type-cursor{
+        animation: type-cursor-move 30s infinite;
+        animation-delay: var(--d);
+      }
+      @keyframes type-cursor-move{
+        0%          { transform: translateX(2px);                            visibility: visible; animation-timing-function: steps(var(--n), end); }
+        1.2%        { transform: translateX(2px);                            visibility: visible; animation-timing-function: steps(var(--n), end); }
+        9%          { transform: translateX(calc(var(--w) + 2px));           animation-timing-function: step-end; }
+        15%         { transform: translateX(calc(var(--w) + 2px));           animation-timing-function: ease-out; }
+        16.2%, 100% { transform: translateX(2px);                            visibility: hidden; }
+      }
+
+      .type-blink{ animation: type-blink 1.05s step-end infinite; }
+      @keyframes type-blink{
+        0%, 100% { opacity: 1; }
+        50%      { opacity: 0; }
+      }
+
+      /* all texts: same font, same body, same width */
+      .tx{
+        font-family: 'Segoe UI', Arial, sans-serif;
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: 0.8px;
+        text-anchor: middle;
+      }
+      .tx-sub  { fill: #cddafffa; }   /* description */
+      .tx-skill{ fill: #b9cbf2; }     /* skills */
+
+      @media (prefers-reduced-motion: reduce){
+        .wave, .bob, .fadein{animation:none;}
+        .type-clip, .glow, .type-cursor, .type-blink{animation:none;}
+        .type-cursor, .type-blink{visibility:hidden;}
+        .s0{width:396px;}          /* without movement */
+        .s1, .s2, .s3, .s4, .s5{width:0;}
+      }
+    </style>
+
+    <linearGradient id="bg-grad-inv" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="1%"   stop-color="rgb(19, 17, 47)"/>
+      <stop offset="99%" stop-color="rgb(68, 126, 219)"/>
+    </linearGradient>
+
+    <linearGradient id="fade-mask-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"           stop-color="white" stop-opacity="0"/>
+      <stop offset="40%"          stop-color="white" stop-opacity="1"/>
+      <stop offset="60%"          stop-color="white" stop-opacity="1"/>
+      <stop offset="100%"         stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- fade in -->
+    <linearGradient id="fade-bottom-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"      stop-color="white" stop-opacity="1"/>
+      <stop offset="50%"     stop-color="white" stop-opacity="1"/>
+      <stop offset="78%"     stop-color="white" stop-opacity="0.45"/>
+      <stop offset="100%"    stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+
+    <mask id="quad-fade-mask">
+      <rect width="1500" height="310" fill="url(#fade-mask-grad)"/>
+    </mask>
+
+    <mask id="fade-bottom-mask">
+      <rect width="1500" height="310" fill="url(#fade-bottom-grad)"/>
+    </mask>
+
+    <!-- soft light source: used for every blue flash -->
+    <radialGradient id="spark-main">
+      <stop offset="0%"   stop-color="#dbe8ff" stop-opacity="0.95"/>
+      <stop offset="14%"  stop-color="#8fb8ff" stop-opacity="0.5"/>
+      <stop offset="40%"  stop-color="#568eff" stop-opacity="0.42"/>
+      <stop offset="72%"  stop-color="#568eff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#568eff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- wide ambient halo -->
+    <radialGradient id="spark-halo">
+      <stop offset="1%"   stop-color="#568eff" stop-opacity="0.38"/>
+      <stop offset="50%"  stop-color="#568eff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#568eff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- heavy gaussian blur -->
+    <filter id="banner-blur" x="-50%" y="-90%" width="150%" height="220%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="46"/>
+    </filter>
+
+    <!-- blur extra -->
+    <filter id="wave-blur" x="-95%" y="-95%" width="250%" height="250%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="42"/>
+    </filter>
+
+    <!-- tighter blur -->
+    <filter id="spark-blur" x="-90%" y="-90%" width="220%" height="220%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="20"/>
+    </filter>
+
+    <!-- ============ Cuts, one per text, same structure ============
+         x = 750 - textLength/2  ->  the cut starts when text start -->
+    <clipPath id="cp-0"><rect class="type-clip s0" style="--n:33;" x="552"   y="132" width="0" height="70"/></clipPath>
+    <clipPath id="cp-1"><rect class="type-clip s1" style="--n:24;" x="601"   y="132" width="0" height="70"/></clipPath>
+    <clipPath id="cp-2"><rect class="type-clip s2" style="--n:27;" x="585"   y="132" width="0" height="70"/></clipPath>
+    <clipPath id="cp-3"><rect class="type-clip s3" style="--n:23;" x="597.5" y="132" width="0" height="70"/></clipPath>
+    <clipPath id="cp-4"><rect class="type-clip s4" style="--n:19;" x="636"   y="132" width="0" height="70"/></clipPath>
+    <clipPath id="cp-5"><rect class="type-clip s5" style="--n:23;" x="617.5" y="132" width="0" height="70"/></clipPath>
+  </defs>
+
+  <g mask="url(#quad-fade-mask)">
+   <g mask="url(#fade-bottom-mask)">
+
+    <!-- ============ BANNER ============ -->
+    <g filter="url(#banner-blur)">
+      <rect x="-80" y="-80" width="1660" height="470" fill="url(#bg-grad-inv)"/>
+
+      <!-- Wave: 6 (Required) -->
+      <g class="wave" style="animation-duration:12s; animation-delay:-10.56s;" opacity="0.8">
+        <g class="bob" style="animation-duration:9s;">
+          <circle class="fadein" style="animation-duration:9s;" cx="-260" cy="250" r="210" fill="url(#spark-main)" filter="url(#wave-blur)"/>
+        </g>
+      </g>
+
+      <g class="wave" style="animation-duration:12s; animation-delay:-1.56s;" opacity="0.8">
+        <g class="bob" style="animation-duration:11s; animation-delay:-2s;">
+          <circle class="fadein" style="animation-duration:11s; animation-delay:-2s;" cx="-260" cy="60" r="195" fill="url(#spark-main)" filter="url(#wave-blur)"/>
+        </g>
+      </g>
+
+      <g class="wave" style="animation-duration:12s; animation-delay:-3.36s;" opacity="0.8">
+        <g class="bob" style="animation-duration:13s; animation-delay:-4s;">
+          <circle class="fadein" style="animation-duration:13s; animation-delay:-4s;" cx="-260" cy="170" r="255" fill="url(#spark-main)" filter="url(#wave-blur)"/>
+        </g>
+      </g>
+
+      <g class="wave" style="animation-duration:13s; animation-delay:-5.59s;" opacity="0.8">
+        <g class="bob" style="animation-duration:15s; animation-delay:-8s;">
+          <circle class="fadein" style="animation-duration:15s; animation-delay:-6s;" cx="-260" cy="290" r="265" fill="url(#spark-main)" filter="url(#wave-blur)"/>
+        </g>
+      </g>
+
+      <g class="wave" style="animation-duration:12s; animation-delay:-6.96s;" opacity="0.55">
+        <g class="bob" style="animation-duration:10s; animation-delay:-16s;">
+          <circle class="fadein" style="animation-duration:10s; animation-delay:-8s;" cx="-260" cy="370" r="320" fill="url(#spark-main)" filter="url(#wave-blur)"/>
+        </g>
+      </g>
+
+      <g class="wave" style="animation-duration:15s; animation-delay:-10.95s;" opacity="0.5">
+        <g class="bob" style="animation-duration:17s; animation-delay:-12s;">
+          <circle class="fadein" style="animation-duration:16s; animation-delay:-10s;" cx="-260" cy="460" r="380" fill="url(#spark-main)" filter="url(#wave-blur)"/>
+        </g>
+      </g>
+
+
+      <!-- ambient velo -->
+      <g opacity="0.1">
+        <circle cx="120"  cy="90"  r="190" fill="url(#spark-halo)"/>
+        <circle cx="760"  cy="280" r="210" fill="url(#spark-halo)"/>
+        <circle cx="1400" cy="110" r="195" fill="url(#spark-halo)"/>
+      </g>
+    </g>
+
+    <!-- core more detailed -->
+    <g filter="url(#spark-blur)" opacity="0.3">
+      <g class="wave" style="animation-duration:12s; animation-delay:-10.56s;">
+        <circle cx="-260" cy="250" r="95" fill="#568eff"/>
+      </g>
+      <g class="wave" style="animation-duration:12s; animation-delay:-1.56s;">
+        <circle cx="-260" cy="60" r="85" fill="#568eff"/>
+      </g>
+      <g class="wave" style="animation-duration:12s; animation-delay:-3.36s;">
+        <circle cx="-260" cy="170" r="100" fill="#568eff"/>
+      </g>
+      <g class="wave" style="animation-duration:13s; animation-delay:-5.59s;">
+        <circle cx="-260" cy="100" r="120" fill="#568eff"/>
+      </g>
+      <g class="wave" style="animation-duration:12s; animation-delay:-6.96s;">
+        <circle cx="-260" cy="130" r="110" fill="#568eff"/>
+      </g>
+      <g class="wave" style="animation-duration:15s; animation-delay:-10.95s;">
+        <circle cx="-260" cy="290" r="115" fill="#568eff"/>
+      </g>
+    </g>
+
+   </g>
+  </g>
+
+  <!-- ============ TEXT ============ -->
+
+  <!-- TITLE -->
+  <text x="750" y="110"
+    font-family="Segoe UI, Arial, sans-serif"
+    font-size="68"
+    font-weight="700"
+    fill="#cddafffa"
+    text-anchor="middle"
+    letter-spacing="-0.5"
+    style="filter: drop-shadow(0 2px 3px rgba(3, 6, 24, 0.55)) drop-shadow(0 0 16px rgba(3, 6, 24, 0.45));">
+    Sup, I'm Stezf!
+  </text>
+
+  <!-- ======================== -->
+       
+
+  <g class="glow s0">
+    <text class="tx tx-sub s0" clip-path="url(#cp-0)" x="750" y="165"
+      textLength="396" lengthAdjust="spacing">Backend &amp; System Design Developer</text>
+  </g>
+  <g class="type-cursor s0" style="--n:33;"><rect class="type-blink" x="552" y="146" width="3" height="21" rx="1" fill="#8fb8ff"/></g>
+
+  <g class="glow s1">
+    <text class="tx tx-skill s1" clip-path="url(#cp-1)" x="750" y="165"
+      textLength="298" lengthAdjust="spacing">Linux Ricing Development</text>
+  </g>
+  <g class="type-cursor s1" style="--n:24;"><rect class="type-blink" x="601" y="146" width="3" height="21" rx="1" fill="#8fb8ff"/></g>
+
+  <g class="glow s2">
+    <text class="tx tx-skill s2" clip-path="url(#cp-2)" x="750" y="165"
+      textLength="330" lengthAdjust="spacing">CI/CD Pipeline &amp; Automation</text>
+  </g>
+  <g class="type-cursor s2" style="--n:27;"><rect class="type-blink" x="585" y="146" width="3" height="21" rx="1" fill="#8fb8ff"/></g>
+
+  <g class="glow s3">
+    <text class="tx tx-skill s3" clip-path="url(#cp-3)" x="750" y="165"
+      textLength="305" lengthAdjust="spacing">Spec-Driven Development</text>
+  </g>
+  <g class="type-cursor s3" style="--n:23;"><rect class="type-blink" x="597.5" y="146" width="3" height="21" rx="1" fill="#8fb8ff"/></g>
+
+  <g class="glow s4">
+    <text class="tx tx-skill s4" clip-path="url(#cp-4)" x="750" y="165"
+      textLength="228" lengthAdjust="spacing">Reverse Engineering</text>
+  </g>
+  <g class="type-cursor s4" style="--n:19;"><rect class="type-blink" x="636" y="146" width="3" height="21" rx="1" fill="#8fb8ff"/></g>
+
+  <g class="glow s5">
+    <text class="tx tx-skill s5" clip-path="url(#cp-5)" x="750" y="165"
+      textLength="265" lengthAdjust="spacing">AI-Assisted Engineering</text>
+  </g>
+  <g class="type-cursor s5" style="--n:23;"><rect class="type-blink" x="617.5" y="146" width="3" height="21" rx="1" fill="#8fb8ff"/></g>
+
+</svg>
