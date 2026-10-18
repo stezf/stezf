@@ -32,13 +32,13 @@
     }
     .lab{
       font-family: 'Segoe UI', Arial, sans-serif;
-      font-size: 30px;
+      font-size: 15px;
       font-weight: 400;
       fill: #6b7280;
     }
     .num{
       font-family: 'Segoe UI', Arial, sans-serif;
-      font-size: 30px;
+      font-size: 15px;
       font-weight: 700;
       fill: #568eff;
     }
