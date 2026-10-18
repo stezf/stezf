@@ -49,8 +49,8 @@
     }
   </style>
 
-  <rect class="pastilla" x="1" y="1" width="146.362" height="52"
-        rx="28"/>
-  <text class="lab" x="24" y="38.8">Visits</text>
-  <text class="num" x="109.676" y="38.8">0</text>
+  <rect class="pastilla" x="35" y="11" width="80.362" height="32"
+        rx="12"/>
+  <text class="lab" x="48" y="32.8">Visits</text>
+  <text class="num" x="94.676" y="32.8">0</text>
 </svg>
