@@ -30,6 +30,8 @@ on:
       - scripts/projects.template.svg
       - scripts/gen_stats.py
       - scripts/stats.template.svg
+      - scripts/gen_visitors.py
+      - scripts/visitors.template.svg
       - scripts/text-metrics.json
 
 permissions:
@@ -59,6 +61,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/gen_projects.py
 
+      - name: Regenerar el SVG de visitas
+        # komarev solo ofrece SVG y camo no lo sirve, asi que el numero se lee
+        # aqui y se pinta en un SVG del repo. Tamco hace falta token.
+        run: python scripts/gen_visitors.py
+
       - name: Regenerar el SVG de estadisticas
         # No token needed: the contributions graph is read from GitHub's own
         # site, which answers unauthenticated. Hence no env in this step.
@@ -66,12 +73,12 @@ jobs:
 
       - name: Commitear si algun SVG cambio
         run: |
-          if git diff --quiet -- assets/projects.svg assets/stats.svg; then
+          if git diff --quiet -- assets/projects.svg assets/stats.svg assets/visitors.svg; then
             echo "Ningun SVG cambio: no hay nada que commitear."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/projects.svg assets/stats.svg
-          git commit -m "chore: actualizar datos de repos y actividad"
+          git add assets/projects.svg assets/stats.svg assets/visitors.svg
+          git commit -m "chore: actualizar datos de repos, actividad y visitas"
           git push

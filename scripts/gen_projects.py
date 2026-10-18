@@ -31,36 +31,36 @@ from datetime import datetime, timezone
 REPOS = ["GlaceShell", "RobloxVerify", "BingR-Bot"]
 
 # --- paths ------------------------------------------------------------------
-AQUI = os.path.dirname(os.path.abspath(__file__))
-RAIZ = os.path.dirname(AQUI)
-PLANTILLA = os.path.join(AQUI, "projects.template.svg")
-METRICAS = os.path.join(AQUI, "text-metrics.json")
-DESTINO = os.path.join(RAIZ, "assets", "projects.svg")
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+TEMPLATE_PATH = os.path.join(HERE, "projects.template.svg")
+METRICS_PATH = os.path.join(HERE, "text-metrics.json")
+DESTINATION = os.path.join(ROOT, "assets", "projects.svg")
 
 # --- card design (viewBox units, see the template) --------------------------
-MARGEN = 40
-SEPARACION = 40
-ALTO_TARJETA = 236
-HUECO_FILAS = 34
-RELLENO = 36              # inner padding
-CUERPO_NOMBRE = 46
-CUERPO_DESCRIPCION = 29
-CUERPO_LENGUAJE = 27
-LINEA_DESCRIPCION = 40
-BASE_NOMBRE = 62
-BASE_DESCRIPCION_1 = 112
-BASE_LENGUAJE = 202
-RADIO_ESQUINA = 16
-SANGRIA_INFERIOR = 20   # aire bajo la ultima fila
-RADIO_PUNTO = 9
-LINEAS_DESCRIPCION = 2
+MARGIN = 40
+GUTTER = 40
+CARD_HEIGHT = 236
+ROW_GAP = 34
+PADDING = 36              # inner padding
+NAME_SIZE = 46
+DESCRIPTION_SIZE = 29
+LANGUAGE_SIZE = 27
+DESCRIPTION_LINE = 40
+NAME_BASELINE = 62
+DESCRIPTION_BASELINE = 112
+LANGUAGE_BASELINE = 202
+CORNER_RADIUS = 16
+BOTTOM_PADDING = 20   # aire low la ultima row
+DOT_RADIUS = 9
+DESCRIPTION_LINES = 2
 # With an odd number of repos the last row has a gap: True makes the last card
 # span both columns and cover it.
-ULTIMA_OCUPA_AMBAS_COLUMNAS = False
+LAST_CARD_SPANS_BOTH = False
 
 # Language colors from github-linguist (lib/linguist/languages.yml). Add new
 # languages here; unknown ones fall back to the brand blue.
-COLOR_LENGUAJE = {
+LANGUAGE_COLORS = {
     "QML": "#44a51c",
     "Shell": "#89e051",
     "Python": "#3572A5",
@@ -74,124 +74,124 @@ COLOR_LENGUAJE = {
     "C": "#555555",
     "C++": "#f34b7d",
 }
-COLOR_MARCA = "#568eff"
+BRAND_COLOR = "#568eff"
 
 # Liberation Sans (Arial metrics) is narrower than Segoe UI but wider than other
 # substitutes; this margin covers the difference so text never overflows.
-MARGEN_SEGURIDAD = 1.06
+SAFETY_MARGIN = 1.06
 
 
-class Metricas:
+class Metrics:
     """Measures strings with the width table in scripts/text-metrics.json."""
 
     def __init__(self, ruta):
         with open(ruta, encoding="utf-8") as fh:
-            datos = json.load(fh)
-        self.regular = datos["regular"]
-        self.negrita = datos["negrita"]
-        self.objetivo = 0.0
+            data = json.load(fh)
+        self.regular = data["regular"]
+        self.negrita = data["negrita"]
+        self.target = 0.0
 
-    def ancho(self, texto, cuerpo, negrita=False):
-        tabla = self.negrita if negrita else self.regular
+    def width(self, text, body, negrita=False):
+        table = self.negrita if negrita else self.regular
         total = 0.0
-        for ch in texto:
-            total += tabla.get(ch, tabla.get("n", 500))
-        return total / 1000.0 * cuerpo * MARGEN_SEGURIDAD
+        for ch in text:
+            total += table.get(ch, table.get("n", 500))
+        return total / 1000.0 * body * SAFETY_MARGIN
 
-    def ajusta(self, texto, cuerpo, negrita=False):
+    def ajusta(self, text, body, negrita=False):
         """Truncates with an ellipsis until it fits the target width."""
-        objetivo = int(self.objetivo)
-        if self.ancho(texto, cuerpo, negrita) <= objetivo:
-            return texto
-        puntos = self.ancho("...", cuerpo, negrita)
-        # Invariant: 'bajo' is a prefix that DOES fit with the dots, 'alto' one
+        target = int(self.target)
+        if self.width(text, body, negrita) <= target:
+            return text
+        points = self.width("...", body, negrita)
+        # Invariant: 'low' is a prefix that DOES fit with the dots, 'high' one
         # that does not. The +1 here is deliberate: without it the previous
         # version overshot by one glyph (measured 620.2 vs a 618 target).
-        bajo, alto = 0, len(texto)
-        while bajo + 1 < alto:
-            medio = (bajo + alto) // 2
-            if self.ancho(texto[:medio], cuerpo, negrita) + puntos <= objetivo:
-                bajo = medio
+        low, high = 0, len(text)
+        while low + 1 < high:
+            mid = (low + high) // 2
+            if self.width(text[:mid], body, negrita) + points <= target:
+                low = mid
             else:
-                alto = medio
-        return texto[:bajo].rstrip(" ,;:.-") + "..."
+                high = mid
+        return text[:low].rstrip(" ,;:.-") + "..."
 
     def _cabe(self, palabras, limite):
         """Greedily wraps words into lines of width `limite`, without balancing."""
-        lineas = []
+        lines = []
         actual = ""
         for palabra in palabras:
             tentativa = palabra if not actual else actual + " " + palabra
-            if not actual or self.ancho(tentativa, self.cuerpo) <= limite:
+            if not actual or self.width(tentativa, self.body) <= limite:
                 actual = tentativa
             else:
-                lineas.append(actual)
+                lines.append(actual)
                 actual = palabra
         if actual:
-            lineas.append(actual)
-        return lineas
+            lines.append(actual)
+        return lines
 
-    def envuelve(self, texto, cuerpo, lineas):
-        """Wraps text into `lineas` lines, widest first.
+    def envuelve(self, text, body, lines):
+        """Wraps text into `lines` lines, widest first.
 
         The wrap is BALANCED, and that matters: a greedy wrap fills the first
         line and dumps the rest in the last one, so a description that fits in
         two lines ends up ellipsized. So we look for the MINIMUM width that
-        still fits the text in `lineas` lines.
+        still fits the text in `lines` lines.
 
         The search is over INTEGERS and without the +1, both tested: in floats
         it stalls (once low and high meet, (low+high)/2 rounds down to low, the
         step stops shrinking the interval and the loop never ends), and with the
         +1 a failed test jumps past the answer and truncates text that fits.
         """
-        self.cuerpo = cuerpo
-        palabras = texto.split()
+        self.body = body
+        palabras = text.split()
         if not palabras:
-            return [""] * lineas
+            return [""] * lines
 
-        objetivo = int(self.objetivo)
-        ancho_completo = self.ancho(texto, cuerpo)
+        target = int(self.target)
+        full_width = self.width(text, body)
 
-        if ancho_completo <= objetivo:
-            return [texto] + [""] * (lineas - 1)
+        if full_width <= target:
+            return [text] + [""] * (lines - 1)
 
         # A single word wider than the card cannot be wrapped; truncate it.
-        if max(self.ancho(p, cuerpo) for p in palabras) > objetivo:
-            return [self.ajusta(palabras[0], cuerpo)] + [""] * (lineas - 1)
+        if max(self.width(p, body) for p in palabras) > target:
+            return [self.ajusta(palabras[0], body)] + [""] * (lines - 1)
 
-        # Invariant: 'alto' is always a width the text DOES fit in 'lineas'
+        # Invariant: 'high' is always a width the text DOES fit in 'lines'
         # lines, and the search is BOUNDED by the card width (an unbounded
         # minimum returned 874 for a usable width of 618).
-        if len(self._cabe(palabras, objetivo)) > lineas:
+        if len(self._cabe(palabras, target)) > lines:
             # Does not fit even at full card width: greedy-wrap it and ellipsize
             # the last line, which keeps as much text as possible.
-            salida = self._cabe(palabras, objetivo)
-            ultimas = salida[: lineas - 1]
-            ultimas.append(self.ajusta(" ".join(salida[lineas - 1:]), cuerpo))
-            return ultimas + [""] * (lineas - len(ultimas))
+            output = self._cabe(palabras, target)
+            last_lines = output[: lines - 1]
+            last_lines.append(self.ajusta(" ".join(output[lines - 1:]), body))
+            return last_lines + [""] * (lines - len(last_lines))
 
         # Otherwise take the MINIMUM width that fits: the most even wrap.
-        bajo, alto = 0, objetivo
-        while bajo + 1 < alto:
-            medio = (bajo + alto) // 2
-            if len(self._cabe(palabras, medio)) <= lineas:
-                alto = medio
+        low, high = 0, target
+        while low + 1 < high:
+            mid = (low + high) // 2
+            if len(self._cabe(palabras, mid)) <= lines:
+                high = mid
             else:
-                bajo = medio
+                low = mid
 
-        salida = self._cabe(palabras, alto)
-        return salida + [""] * (lineas - len(salida))
+        output = self._cabe(palabras, high)
+        return output + [""] * (lines - len(output))
 
 
-def escapar(texto):
+def escape(text):
     """Escapes text so it can be embedded in XML."""
-    return (texto.replace("&", "&amp;")
+    return (text.replace("&", "&amp;")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
                 .replace('"', "&quot;"))
 
 
-def pedir_repos(duenno):
+def fetch_repos(owner):
     """Fetches one object per listed repo from the GitHub API."""
     cabeceras = {
         "User-Agent": "stezf-profile-readme",
@@ -202,9 +202,9 @@ def pedir_repos(duenno):
     if token:
         cabeceras["Authorization"] = "Bearer " + token
 
-    salida = []
-    for nombre in REPOS:
-        url = "https://api.github.com/repos/%s/%s" % (duenno, nombre)
+    output = []
+    for name in REPOS:
+        url = "https://api.github.com/repos/%s/%s" % (owner, name)
         peticion = urllib.request.Request(url, headers=cabeceras)
         try:
             with urllib.request.urlopen(peticion, timeout=30) as respuesta:
@@ -226,145 +226,146 @@ def pedir_repos(duenno):
                 "error: the API returned %s for %s/%s\n"
                 "       %s\n"
                 "       assets/projects.svg is left untouched, so the section does "
-                "not end up empty." % (err.code, duenno, nombre, motivo))
+                "not end up empty." % (err.code, owner, name, motivo))
         except urllib.error.URLError as err:
             raise SystemExit(
                 "error: could not reach the GitHub API (%s).\n"
                 "       assets/projects.svg is left untouched, so the section does\n"
                 "       not end up empty." % err.reason)
-        salida.append({
-            "nombre": crudo.get("name") or nombre,
-            "descripcion": (crudo.get("description") or "").strip(),
-            "lenguaje": crudo.get("language") or "",
+        output.append({
+            "name": crudo.get("name") or name,
+            "description": (crudo.get("description") or "").strip(),
+            "language": crudo.get("language") or "",
         })
         print("  %-14s %-10s %s" % (
-            salida[-1]["nombre"], salida[-1]["lenguaje"] or "-",
-            (salida[-1]["descripcion"][:54] or "(sin descripcion)")))
-    return salida
+            output[-1]["name"], output[-1]["language"] or "-",
+            (output[-1]["description"][:54] or "(sin description)")))
+    return output
 
 
-def tarjeta(dato, x, y, ancho, metricas):
+def card(dato, x, y, width, metrics):
     """One card: name, two-line description and language with its dot."""
-    metricas.objetivo = ancho - 2 * RELLENO
+    metrics.target = width - 2 * PADDING
 
-    lineas = metricas.envuelve(
-        dato["descripcion"] or "Sin descripcion.", CUERPO_DESCRIPCION,
-        LINEAS_DESCRIPCION)
-    nombre = metricas.ajusta(dato["nombre"], CUERPO_NOMBRE, negrita=True)
-    lenguaje = dato["lenguaje"]
-    color = COLOR_LENGUAJE.get(lenguaje, COLOR_MARCA)
-    x_texto = x + RELLENO
+    lines = metrics.envuelve(
+        dato["description"] or "Sin description.", DESCRIPTION_SIZE,
+        DESCRIPTION_LINES)
+    name = metrics.ajusta(dato["name"], NAME_SIZE, negrita=True)
+    language = dato["language"]
+    color = LANGUAGE_COLORS.get(language, BRAND_COLOR)
+    x_text = x + PADDING
 
-    partes = ["    <g>"]
-    partes.append(
+    parts = ["    <g>"]
+    parts.append(
         '      <rect class="card" x="%d" y="%d" width="%d" height="%d" rx="%d"'
         ' filter="url(#card-shadow)"/>'
-        % (x, y, ancho, ALTO_TARJETA, RADIO_ESQUINA))
-    partes.append('      <text class="name" x="%d" y="%d">%s</text>'
-                  % (x_texto, y + BASE_NOMBRE, escapar(nombre)))
-    for indice, linea in enumerate(lineas):
-        if not linea:
+        % (x, y, width, CARD_HEIGHT, CORNER_RADIUS))
+    parts.append('      <text class="name" x="%d" y="%d">%s</text>'
+                  % (x_text, y + NAME_BASELINE, escape(name)))
+    for index, line in enumerate(lines):
+        if not line:
             continue
-        partes.append('      <text class="desc" x="%d" y="%d">%s</text>'
-                      % (x_texto, y + BASE_DESCRIPCION_1 + indice * LINEA_DESCRIPCION,
-                         escapar(linea)))
-    if lenguaje:
-        partes.append('      <circle cx="%d" cy="%d" r="%d" fill="%s"/>'
-                      % (x_texto + RADIO_PUNTO, y + BASE_LENGUAJE - 9,
-                         RADIO_PUNTO, color))
-        partes.append('      <text class="lang" x="%d" y="%d">%s</text>'
-                      % (x_texto + 2 * RADIO_PUNTO + 14, y + BASE_LENGUAJE,
-                         escapar(metricas.ajusta(lenguaje, CUERPO_LENGUAJE))))
-    partes.append("    </g>")
-    return "\n".join(partes)
+        parts.append('      <text class="desc" x="%d" y="%d">%s</text>'
+                      % (x_text, y + DESCRIPTION_BASELINE + index * DESCRIPTION_LINE,
+                         escape(line)))
+    if language:
+        parts.append('      <circle cx="%d" cy="%d" r="%d" fill="%s"/>'
+                      % (x_text + DOT_RADIUS, y + LANGUAGE_BASELINE - 9,
+                         DOT_RADIUS, color))
+        parts.append('      <text class="lang" x="%d" y="%d">%s</text>'
+                      % (x_text + 2 * DOT_RADIUS + 14, y + LANGUAGE_BASELINE,
+                         escape(metrics.ajusta(language, LANGUAGE_SIZE))))
+    parts.append("    </g>")
+    return "\n".join(parts)
 
 
-def render(datos, metricas, generado):
-    total = len(datos)
-    ancho_columna = (1500 - 2 * MARGEN - SEPARACION) // 2
-    ancho_completo = 1500 - 2 * MARGEN
-    impar = total % 2 == 1 and ULTIMA_OCUPA_AMBAS_COLUMNAS
-    paso = ALTO_TARJETA + HUECO_FILAS
+def render(data, metrics, generado):
+    total = len(data)
+    column_width = (1500 - 2 * MARGIN - GUTTER) // 2
+    full_width = 1500 - 2 * MARGIN
+    odd = total % 2 == 1 and LAST_CARD_SPANS_BOTH
+    pitch = CARD_HEIGHT + ROW_GAP
 
-    tarjetas = []
-    cajas = []
-    fila = 0
-    for indice, dato in enumerate(datos):
-        if impar and indice == total - 1:
+    cards = []
+    boxes = []
+    row = 0
+    for index, dato in enumerate(data):
+        if odd and index == total - 1:
             # Odd repo count: the last card spans both columns instead of leaving a gap.
             # It always starts a new row, so the row is counted first.
-            if indice > 0:
-                fila += 1
-            cajas.append((MARGEN, fila * paso, ancho_completo))
-            tarjetas.append(tarjeta(dato, MARGEN, fila * paso, ancho_completo, metricas))
+            if index > 0:
+                row += 1
+            boxes.append((MARGIN, row * pitch, full_width))
+            cards.append(card(dato, MARGIN, row * pitch, full_width, metrics))
             continue
-        if indice % 2 == 0 and indice > 0:
-            fila += 1
-        x = MARGEN + (indice % 2) * (ancho_columna + SEPARACION)
-        cajas.append((x, fila * paso, ancho_columna))
-        tarjetas.append(tarjeta(dato, x, fila * paso, ancho_columna, metricas))
+        if index % 2 == 0 and index > 0:
+            row += 1
+        x = MARGIN + (index % 2) * (column_width + GUTTER)
+        boxes.append((x, row * pitch, column_width))
+        cards.append(card(dato, x, row * pitch, column_width, metrics))
 
     # Overlap check: a card in the wrong row draws on top of another one and the SVG
     # is still valid XML, so the bug would only show up when rendering.
-    for i, (x1, y1, w1) in enumerate(cajas):
-        for x2, y2, w2 in cajas[i + 1:]:
+    for i, (x1, y1, w1) in enumerate(boxes):
+        for x2, y2, w2 in boxes[i + 1:]:
             solapan = (x1 < x2 + w2 and x2 < x1 + w1
-                       and y1 < y2 + ALTO_TARJETA and y2 < y1 + ALTO_TARJETA)
+                       and y1 < y2 + CARD_HEIGHT and y2 < y1 + CARD_HEIGHT)
             if solapan:
                 raise SystemExit(
                     "error: cards %d and %d overlap "
                     "(%d,%d %dx%d and %d,%d %dx%d)"
-                    % (i + 1, i + 2, x1, y1, w1, ALTO_TARJETA, x2, y2, w2, ALTO_TARJETA))
+                    % (i + 1, i + 2, x1, y1, w1, CARD_HEIGHT, x2, y2, w2, CARD_HEIGHT))
 
-    # Los 20 de aire de abajo no son un descuido: con ellos el lienzo queda
-    # 526 en vez de 506 y las tarjetas no quedan pegadas al borde.
-    alto = fila * paso + ALTO_TARJETA + SANGRIA_INFERIOR
+    # The 20 units of air at the bottom are not an oversight: with them the
+    # canvas is 526 instead of 506, so the cards do not sit flush against the
+    # edge.
+    high = row * pitch + CARD_HEIGHT + BOTTOM_PADDING
 
-    with open(PLANTILLA, encoding="utf-8") as fh:
-        plantilla = fh.read()
+    with open(TEMPLATE_PATH, encoding="utf-8") as fh:
+        template = fh.read()
 
     # str.replace hits every occurrence, and a marker can be quoted in a comment:
     # the body would then be written inside the comment too. Check before writing.
-    for marcador in ("{{CARDS}}", "{{ALTO}}", "{{GENERADO}}"):
-        apariciones = plantilla.count(marcador)
-        if apariciones != 1:
+    for marker in ("{{CARDS}}", "{{HEIGHT}}", "{{GENERATED}}"):
+        occurrences = template.count(marker)
+        if occurrences != 1:
             raise SystemExit(
                 "error: placeholder %s appears %d times in %s, it should appear once.\n"
                 "       most likely a comment quotes the literal token."
-                % (marcador, apariciones, os.path.relpath(PLANTILLA, RAIZ)))
+                % (marker, occurrences, os.path.relpath(TEMPLATE_PATH, ROOT)))
 
-    cuerpo = "\n".join(tarjetas)
-    salida = (plantilla
-              .replace("{{CARDS}}", cuerpo)
-              .replace("{{ALTO}}", str(alto))
-              .replace("{{GENERADO}}", generado))
-    return salida, alto
+    body = "\n".join(cards)
+    output = (template
+              .replace("{{CARDS}}", body)
+              .replace("{{HEIGHT}}", str(high))
+              .replace("{{GENERATED}}", generado))
+    return output, high
 
 
 def main():
-    seco = "--dry-run" in sys.argv
-    duenno = os.environ.get("REPO_OWNER") or "stezf"
-    metricas = Metricas(METRICAS)
+    dry = "--dry-run" in sys.argv
+    owner = os.environ.get("REPO_OWNER") or "stezf"
+    metrics = Metrics(METRICS_PATH)
 
-    print("querying the GitHub API (%s):" % duenno)
-    datos = pedir_repos(duenno)
+    print("querying the GitHub API (%s):" % owner)
+    data = fetch_repos(owner)
     generado = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    salida, alto = render(datos, metricas, generado)
+    output, high = render(data, metrics, generado)
 
     # Validate before writing: if the XML does not parse, the good file stays.
     import xml.dom.minidom
-    xml.dom.minidom.parseString(salida)
+    xml.dom.minidom.parseString(output)
 
-    if seco:
+    if dry:
         print("\n--dry-run: the SVG is valid (%d cards, canvas 1500x%d),"
-              " nothing written" % (len(datos), alto))
+              " nothing written" % (len(data), high))
         return
 
-    with open(DESTINO, "w", encoding="utf-8") as fh:
-        fh.write(salida)
+    with open(DESTINATION, "w", encoding="utf-8") as fh:
+        fh.write(output)
     print("\nwrote %s (%d cards, canvas 1500x%d, %d bytes)"
-          % (os.path.relpath(DESTINO, RAIZ), len(datos), alto,
-             len(salida.encode())))
+          % (os.path.relpath(DESTINATION, ROOT), len(data), high,
+             len(output.encode())))
 
 
 if __name__ == "__main__":

@@ -45,7 +45,7 @@
 <br><br>
 
 <p align="center">
-<img src="https://komarev.com/ghpvc/?username=stezf&amp;label=Visits&amp;color=568eff" alt="Visits"/>
+<img src="assets/visitors.svg" alt="Visits"/>
 </p>
 
 <img src="assets/footer.svg" width="100%" alt="footer"/>
