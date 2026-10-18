@@ -47,8 +47,6 @@
       stroke: #3a416a;
       stroke-opacity: .38;
       stroke-width: 2;
-      /* Translucida: al 40% deja pasar el fondo de la pagina, y el borde hace
-         el trabajo de dibujar el contorno. */
       fill-opacity: .4;
     }
     .name{
