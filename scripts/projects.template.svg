@@ -43,10 +43,13 @@
 
   <style>
     .card{
-      fill: #f6f8fa;
+      fill: #fafafa;
       stroke: #3a416a;
       stroke-opacity: .38;
       stroke-width: 2;
+      /* Translucida: al 40% deja pasar el fondo de la pagina, y el borde hace
+         el trabajo de dibujar el contorno. */
+      fill-opacity: .4;
     }
     .name{
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -63,11 +66,11 @@
     .lang{
       font-family: 'Segoe UI', Arial, sans-serif;
       font-size: 27px;
-      fill: #6b7280;
-      fill-opacity: .68;
+      fill: #858b98;
+      fill-opacity: .725;
     }
     @media (prefers-color-scheme: dark){
-      .card{ fill: #2e3866; stroke-opacity: .45; }
+      .card{ fill: #2e3866; stroke-opacity: .65; }
       .name{ fill: #e6edf3; }
       .desc{ fill: #b3bcc9; }
       .lang{ fill: #8a94a3; }

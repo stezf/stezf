@@ -50,7 +50,8 @@ LINEA_DESCRIPCION = 40
 BASE_NOMBRE = 62
 BASE_DESCRIPCION_1 = 112
 BASE_LENGUAJE = 202
-RADIO_ESQUINA = 28
+RADIO_ESQUINA = 16
+SANGRIA_INFERIOR = 20   # aire bajo la ultima fila
 RADIO_PUNTO = 9
 LINEAS_DESCRIPCION = 2
 # With an odd number of repos the last row has a gap: True makes the last card
@@ -315,7 +316,9 @@ def render(datos, metricas, generado):
                     "(%d,%d %dx%d and %d,%d %dx%d)"
                     % (i + 1, i + 2, x1, y1, w1, ALTO_TARJETA, x2, y2, w2, ALTO_TARJETA))
 
-    alto = fila * paso + ALTO_TARJETA
+    # Los 20 de aire de abajo no son un descuido: con ellos el lienzo queda
+    # 526 en vez de 506 y las tarjetas no quedan pegadas al borde.
+    alto = fila * paso + ALTO_TARJETA + SANGRIA_INFERIOR
 
     with open(PLANTILLA, encoding="utf-8") as fh:
         plantilla = fh.read()
