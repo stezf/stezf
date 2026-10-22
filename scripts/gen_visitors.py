@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """Builds assets/visitors.svg with the profile view count.
 
-The number comes from komarev, which counts profile views. It cannot be used
-directly in the README as <img src="https://komarev..."> because komarev only
-replies with SVG, and GitHub serves external images through the camo proxy,
-which does not accept SVG: it answers 404 "Cannot proxy the given URL" even
-when komarev returns a perfectly fine 200. The SVG files in this repo do show
-up, because they are served straight from raw.githubusercontent.com and never
-go through the proxy.
+Not referenced from the README anymore: the counter there is the komarev badge
+itself. Checked again on 2026-10-22: komarev answers 200 with
+content-type image/svg+xml and a valid SVG, and GitHub's camo does proxy it
+(the "Cannot proxy the given URL" seen before was most likely a komarev
+outage, not a camo rule against SVG; komarev's own docs rely on camo). So the
+badge is the primary source now.
 
-So the count is read here and drawn into an SVG of our own, with the same
-palette as the rest of the profile.
+The generator is kept as the fallback, because it needs no third party: it
+reads the same service and draws assets/visitors.svg with the profile palette.
+If the badge ever disappears, run it and point the README back at the file.
 
 Usage:
     python3 scripts/gen_visitors.py            # queries and writes the SVG
@@ -37,12 +37,12 @@ DESTINATION = os.path.join(ROOT, "assets", "visitors.svg")
 LABEL = "Visits"
 
 # badge geometry
-HEIGHT = 56
-RADIUS = 28
-PADDING = 22
-GAP = 14
-FONT_SIZE = 30
-STROKE = 2
+HEIGHT = 34
+RADIUS = 17
+PADDING = 13
+GAP = 8
+FONT_SIZE = 18
+STROKE = 1.5
 
 
 class Metrics:
@@ -131,7 +131,7 @@ def render(number, metrics):
                 "error: the marker %s does not appear in %s"
                 % (marker, os.path.relpath(TEMPLATE, ROOT)))
 
-    # The baseline is derived from the text box instead of eyeballed: at 30px the
+    # The baseline is derived from the text box instead of eyeballed: at 18px the
     # box runs from 0.72em (no capitals, no accents) to 0.95em (both), and
     # "Visits" happens to be exactly the capital-heavy case.
     box_height = FONT_SIZE * 0.72

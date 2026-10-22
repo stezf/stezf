@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 86" width="100%" preserveAspectRatio="xMidYMid meet">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -40 1500 141" width="100%" preserveAspectRatio="xMidYMid meet">
   <!-- Section title: "projects" icon + Active Projects & Highlights.
 
        The icon comes from assets/icons/projects.svg, COPIED inline: an SVG loaded
@@ -22,11 +22,23 @@
                           -> center at x=465.1, its box starts at 70.4
                              = 50.4 of icon + 20 of air
 
-       ROTATION: rotate(-16), 16 degrees left, around the icon's center. Note the
-       rotated icon box grows from 50.4x52 to 62.7x63.9, so the translate above no
-       longer holds: the center moved to (62.7/2, 51.99) to keep the ink at x=0
-       and in the same vertical band, and the text shifted +6.18 to keep the 20
-       of air. The rotated height (20.1..83.9) just fits the 86 tall viewBox. -->
+       ROTATION: rotate(-10), 10 degrees left, around the icon's center. The
+       rotated box grows from 50.4x52 to 58.6x59.9, so the translate above was
+       recomputed: the center sits at (31.37, 51.99), which puts the ink at
+       x=2.1..60.7 (about 2 units in, no longer flush at 0: 1.2px at 890 wide)
+       and y=22.0..82.0, inside the 86 tall band. The text keeps the
+       +6.18 shift that came with the rotation.
+
+       SECTION AIR: the viewBox is 40 units taller than that band, 40 at
+       the TOP (y=-40 to 86), and that is the only separation between
+       sections. It used to be a <br><br><br> in the README: 72px fixed,
+       taller than this whole title on a phone. Now it scales with the
+       image: 24px at 890 wide, 9px at 343.
+
+       RULE: the divider that used to be assets/rule.svg is drawn here, at
+       y=91.5..94.5, 5.5 below the 86 band. Title and line are one image,
+       so each section loses one paragraph margin (16px) plus the 6 units
+       of air the standalone rule had: 21px less at 890 wide, 18px at 343. -->
 
   <style>
     .t{
@@ -47,6 +59,9 @@
       <stop offset="0" stop-color="#568eff"/>
       <stop offset="1" stop-color="#2f5fd6"/>
     </linearGradient>
+    <linearGradient id="rule-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="33%" stop-color="#568eff" stop-opacity=".5"/>
+    </linearGradient>
   </defs>
 
   <g transform="translate(31.37 51.99) rotate(-10) scale(0.406) translate(-64.025 -64.015)">
@@ -54,4 +69,8 @@
   </g>
 
   <text class="t" x="385.28" y="75">Some Active Projects</text>
+  <!-- Divider. It used to be assets/rule.svg; it lives here now so the gap
+       between the title and the line is one paragraph margin, not two. -->
+  <rect x="0" y="91.5" width="1500" height="3" fill="url(#rule-grad)"
+        shape-rendering="crispEdges"/>
 </svg>
