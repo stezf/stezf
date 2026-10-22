@@ -1,12 +1,8 @@
 <img src="assets/header.svg" width="100%"/>
 
-<br><br>
-<br><br>
 <img src="assets/about-title.svg" width="100%" alt="About Me"/>
-<img src="assets/rule.svg" width="100%" height="10" alt=""/>
 
 <img src="assets/aboutme.svg" width="100%" alt='aboutme.json — name: Stezf. role: Backend &amp; System Design Developer. learning: (a completar). currently: (a completar). outside_the_terminal: (a completar).'/>
-<br><br>
 
 <img src="assets/about-note.svg" width="100%" alt="Building to Learn, Sharing to Grow: I am fascinated by building systems that solve a real problem or provide considerable interest as learning, both personally and for the Open-source community on a self-taught basis!"/>
 
