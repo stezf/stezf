@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100.029 34" width="100.029" height="34">
+  <!-- TEMPLATE for the visit counter. Written by scripts/gen_visitors.py.
+
+       WHY THIS FILE EXISTS INSTEAD OF AN EXTERNAL BADGE: an external visit badge
+       (komarev, hits-counter) replies with SVG, and GitHub serves external
+       images through the camo proxy, which does NOT accept SVG: it answers 404
+       with "Cannot proxy the given URL" even when the service returns a perfect
+       200. Checked. The SVG files in this repo do show, because they go straight
+       to raw.githubusercontent.com without the proxy.
+
+       So the number is brought in by the generator and drawn here, with the
+       same palette as the rest of the profile. If the service goes down the
+       generator fails without touching the previous file, and the profile keeps
+       showing the last count that could be read.
+
+       The WIDTH, WIDTH_INT, HEIGHT, HEIGHT_INT, RADIUS, X_LABEL, X_NUM, BASE
+       and NUMBER markers are
+       computed by the generator, which measures the text with the table in
+       scripts/text-metrics.json, because a badge with a fixed width goes
+       crooked as soon as the count grows from one digit to two.
+
+       NOTE WHEN EDITING: markers are quoted WITHOUT the braces on purpose. The
+       generator uses str.replace, which hits every occurrence, and checks that
+       no marker appears inside a comment. If a comment quoted the token with
+       the braces, the generator would write the value into the comment too. -->
+  <style>
+    .pastilla{
+      fill: #f6f8fa;
+      stroke: #3a416a;
+      stroke-opacity: .38;
+      stroke-width: 2;
+    }
+    .lab{
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      fill: #6b7280;
+    }
+    .num{
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      fill: #568eff;
+    }
+    @media (prefers-color-scheme: dark){
+      .pastilla{ fill: #2e3866; stroke-opacity: .55; }
+      .lab{ fill: #b3bcc9; }
+      .num{ fill: #8fb8ff; }
+    }
+  </style>
+
+  <rect class="pastilla" x="1" y="1" width="97.0288" height="31"
+        rx="17"/>
+  <text class="lab" x="14.5" y="23.48">Visits</text>
+  <text class="num" x="65.5056" y="23.48">30</text>
+</svg>
