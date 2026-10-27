@@ -66,12 +66,12 @@ jobs:
 
       - name: Commitear si algun SVG cambio
         run: |
-          if git diff --quiet -- assets/projects.svg assets/stats.svg assets/visitors.svg; then
-            echo "Ningun SVG cambio: no hay nada que commitear."
+          if git diff --quiet -- assets/projects.svg assets/stats.svg; then
+            echo "No SVGs changed: nothing to commit."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/projects.svg assets/stats.svg assets/visitors.svg
-          git commit -m "chore: actualizar datos de repos, actividad y visitas"
+          git add assets/projects.svg assets/stats.svg
+          git commit -m "chore: updated repos data and activity"
           git push
