@@ -49,29 +49,25 @@
   </defs>
 
   <!-- panel: centered at x=750 (750 - 1120/2 = 190) -->
-  <rect x="190.5" y="1.5" width="1250" height="490" rx="25"
+  <rect x="330.5" y="1.5" width="950" height="460" rx="25"
         fill="#1b203b" stroke="#568eff" stroke-opacity=".3"
         filter="url(#card-shadow)"/>
 
   <!-- terminal-style header -->
-  <line x1="191" y1="70" x2="1450" y2="70" stroke="#568eff" stroke-opacity=".18"/>
-  <circle cx="234" cy="30" r="9" fill="#568eff" fill-opacity=".9"/>
-  <circle cx="274" cy="30" r="9" fill="#568eff" fill-opacity=".6"/>
-  <circle cx="314" cy="30" r="9" fill="#568eff" fill-opacity=".35"/>
-  <text class="mono f" x="353" y="39">aboutme.json</text>
+  <line x1="330.5" y1="70" x2="1280" y2="70" stroke="#568eff" stroke-opacity=".28"/>
+  <text class="mono f" x="370" y="42">aboutme.json</text>
 
   <!-- Content: one <text> per JSON line, with xml:space="preserve". That
        attribute is essential: without it SVG collapses the two indent spaces
        into one and the JSON looks crooked. Each <text> also sits on its own
        file line, because a newline inside <text> renders as a space. Every line
        adds 48 of height. -->
-  <text class="mono" x="313" y="130" xml:space="preserve"><tspan class="p">{</tspan></text>
-  <text class="mono" x="313" y="170" xml:space="preserve">  <tspan class="k">"user"</tspan><tspan class="p">: </tspan><tspan class="s">"Stezf"</tspan><tspan class="p">,</tspan></text>
-  <text class="mono" x="313" y="210" xml:space="preserve">  <tspan class="k">"role"</tspan><tspan class="p">: </tspan><tspan class="s">"Backend &amp; System Design Developer"</tspan><tspan class="p">,</tspan></text>
-  <text class="mono" x="313" y="250" xml:space="preserve">  <tspan class="k">"learning"</tspan><tspan class="s">: [C, Rust, Astro, Qt Quick],</tspan></text>
-  <text class="mono" x="313" y="290" xml:space="preserve">  <tspan class="k">"currently-focus"</tspan><tspan class="p">: </tspan><tspan class="s">"GlaceShell"</tspan><tspan class="p">,</tspan></text>
-  <text class="mono" x="313" y="330" xml:space="preserve">  <tspan class="k">"status"</tspan><tspan class="p">: </tspan><tspan class="s">"allways learning something new"</tspan><tspan class="p">,</tspan></text>
-  <text class="mono" x="313" y="370" xml:space="preserve">  <tspan class="k">"machine"</tspan><tspan class="p">: </tspan><tspan class="s">"AMD Ryzen 5 8600G w/ 760M"</tspan><tspan class="p">,</tspan></text>
-  <text class="mono" x="313" y="410" xml:space="preserve">  <tspan class="k">"tastes"</tspan><tspan class="p">: </tspan><tspan class="s">[Ricing, Hardware, Metrics, Tecnology]</tspan></text>
-  <text class="mono" x="313" y="450" xml:space="preserve"><tspan class="p">}</tspan></text>
+  <text class="mono" x="375" y="130" xml:space="preserve"><tspan class="p">{</tspan></text>
+  <text class="mono" x="375" y="170" xml:space="preserve">  <tspan class="k">"user"</tspan><tspan class="p">: </tspan><tspan class="s">"Stezf"</tspan><tspan class="p">,</tspan></text>
+  <text class="mono" x="375" y="210" xml:space="preserve">  <tspan class="k">"role"</tspan><tspan class="p">: </tspan><tspan class="s">"Backend &amp; System Design Developer"</tspan><tspan class="p">,</tspan></text>
+  <text class="mono" x="375" y="250" xml:space="preserve">  <tspan class="k">"learning"</tspan><tspan class="s">: [C, Rust, Astro, Qt Quick],</tspan></text>
+  <text class="mono" x="375" y="290" xml:space="preserve">  <tspan class="k">"status"</tspan><tspan class="p">: </tspan><tspan class="s">"Active"</tspan><tspan class="p">,</tspan></text>
+  <text class="mono" x="375" y="330" xml:space="preserve">  <tspan class="k">"machine"</tspan><tspan class="p">: </tspan><tspan class="s">"AMD Ryzen 5 8600G w/ 760M"</tspan><tspan class="p">,</tspan></text>
+  <text class="mono" x="375" y="370" xml:space="preserve">  <tspan class="k">"tastes"</tspan><tspan class="p">: </tspan><tspan class="s">[Tech-Talk, Hardware, Ricing]</tspan></text>
+  <text class="mono" x="375" y="410" xml:space="preserve"><tspan class="p">}</tspan></text>
 </svg>

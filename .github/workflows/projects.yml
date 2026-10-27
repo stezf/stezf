@@ -13,7 +13,7 @@
 # If step 2 fails, step 3 does not run and the SVG already in the repo stays as
 # it is: showing week-old data beats leaving the section empty.
 
-name: Actualizar proyectos
+name: Update projects
 
 on:
   schedule:

@@ -22,8 +22,4 @@
 
 <img src="assets/stats.svg" width="100%" alt="Activity over the last 6 months: 145 contributions, 29 active days, a best day of 18 and a longest streak of 8. Below it, the weekly curve and the 27-week matrix."/>
 
-<p align="center">
-<img src="https://komarev.com/ghpvc/?username=stezf&amp;label=Visits&amp;color=568eff&amp;style=flat" alt="Visits"/>
-</p>
-
 <img src="assets/footer.svg" width="100%" alt="footer"/>
