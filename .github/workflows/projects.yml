@@ -1,15 +1,19 @@
+# Regenera assets/stats.svg con datos de actividad de GitHub.
+#
 # WHY THIS WORKFLOW EXISTS: the README is served as sanitized HTML, with no
-# <script> and no style=, and an SVG in <img> renders in restricted mode. The
+# <script> and no style=, and an SVG in  renders in restricted mode. The
 # profile cannot query the API, so the data is fetched here and baked into the
 # SVG, which the README can load.
-
+#
 # What it does, in order:
 #   1. checkout
-#   2. commit the change if the SVG changed
+#   2. python scripts/gen_stats.py   (stdlib only, no pip install needed)
+#   3. commit the change if the SVG changed
+#
 # If step 2 fails, step 3 does not run and the SVG already in the repo stays as
 # it is: showing week-old data beats leaving the section empty.
 
-name: Actualizar proyectos
+name: Actualizar estadísticas
 
 on:
   schedule:
@@ -32,7 +36,7 @@ permissions:
 # If two runs overlap (a push to this workflow triggers another), the second
 # one waits instead of clashing.
 concurrency:
-  group: actualizar-proyectos
+  group: actualizar-estadisticas
   cancel-in-progress: false
 
 jobs:
@@ -45,19 +49,19 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Regenerar el SVG de estadisticas
+      - name: Regenerar el SVG de estadísticas
         # No token needed: the contributions graph is read from GitHub's own
         # site, which answers unauthenticated. Hence no env in this step.
         run: python scripts/gen_stats.py
 
-      - name: Commitear si algun SVG cambio
+      - name: Commitear si cambió algo
         run: |
-          if git diff --quiet -- assets/stats.svg; then
-            echo "No SVGs changed: nothing to commit."
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes: nothing to commit."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/stats.svg
-          git commit -m "chore: updated repos data and activity"
+          git add .
+          git commit -m "chore: regenerated SVGs"
           git push
