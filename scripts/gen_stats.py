@@ -14,7 +14,7 @@ Usage:
     python3 scripts/gen_stats.py --dry-run  # query and report only
 
 Environment variables:
-    GITHUB_TOKEN   unused here, accepted for symmetry with gen_projects.py
+    GITHUB_TOKEN   accepted for symmetry, unused here.
     STATS_MONTHES  months to show, defaults to 6
     REPO_OWNER     repo owner, defaults to stezf
 """

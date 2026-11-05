@@ -1,25 +1,37 @@
-<img src="assets/header.svg" width="100%"/>
+<!--header-->
+# <img src="assets/icons/victory-hand.gif" width="3.3%"> Hi There!
 
-<img src="assets/about-title.svg" width="100%" alt="About Me"/>
-<br>
+I'm **Stezf**, an independent Software Developer.
 
-<img src="assets/aboutme.svg" width="100%" alt='aboutme.json — name: Stezf. role: Backend &amp; System Design Developer. learning: (a completar). currently: (a completar). outside_the_terminal: (a completar).'/>
+I mainly work in my own projects & contributing with other users focusing on Backend-Logic core.
 
-<img src="assets/about-note.svg" width="100%" alt="Building to Learn, Sharing to Grow: I am fascinated by building systems that solve a real problem or provide considerable interest as learning, both personally and for the Open-source community on a self-taught basis!"/>
+Moreover, I often setting up my own rice desktops, mostly using the Qt framework and other useful tools.
 
-<img src="assets/tool-title.svg" width="100%" alt="Tool Box"/>
+## <img src="assets/icons/eyes.gif" width="3%"> What Drives Me
+I build to learn and share to grow. Every project solves a real problem and teaches me something new, including the open-source community gets it all.
 
+<!--tools-->
+## <img src="assets/icons/tool.svg" width="2.99%"> Stack & Tool Box
+
+
+<!-- languages.svg-->
 <img src="assets/languages.svg" width="100%" alt="HTML, CSS, JavaScript, TypeScript, Bash, Python, Go, Lua, QML">
 <br><br>
 
+<!-- tools.svg-->
 <img src="assets/tools.svg" width="100%" alt="Astro, VS Code, Vim, Git, Docker, Arch Linux, Linux, Obsidian, Supabase, npm, Figma, Postgres, Selenium y Vercel">
+<br><br>
 
-<img src="assets/projects-title.svg" width="100%" alt="Some Active Projects"/>
+<!-- stats.svg-->
+## <img src="assets/icons/github.svg" width="3%"> Stats
 
-<img src="assets/projects.svg" width="100%" alt="proyects">
 
-<img src="assets/github-title.svg" width="100%" alt="Github Stats"/>
+<img src="assets/stats.svg" width="100%" alt="Activity"/>
 
-<img src="assets/stats.svg" width="100%" alt="Activity over the last 6 months: 145 contributions, 29 active days, a best day of 18 and a longest streak of 8. Below it, the weekly curve and the 27-week matrix."/>
+<div align="center">
+
+### Contact in Bio. <img src="assets/icons/blueblob_jump.gif" width="3%">
+
+</div>
 
 <img src="assets/footer.svg" width="100%" alt="footer"/>

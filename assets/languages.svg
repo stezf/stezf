@@ -21,9 +21,9 @@
        "qml", same on devicon or simple-icons). The chip is labeled QML because
        what is listed is the language.
 
-       ANIMATION: each chip carries its own dur (tempo), delay (phase), amp
-       (height) and ampx (horizontal bounce) variables. See the @keyframes note
-       below on why there are thirteen keyframes. -->
+       Static chips: no animation. The dur/delay/amp/ampx variables are kept
+       only for reference in case motion is added back later. -->
+
 
   <defs>
     <!-- Subtle shadow per chip: #080808 at alpha 0x30 (= 48/255 = 0.19). It sits
@@ -38,47 +38,7 @@
 
   <style>
     .chip{
-      animation: float var(--dur) linear infinite;
-      animation-delay: var(--delay);
-    }
-    /* Smooth oscillation: X swings side to side (a sine) while Y rises and
-       falls, and together they draw a figure eight.
-
-       THE THIRTEEN KEYFRAMES SAMPLE A SINE, NOT A POLYGON, and that is what
-       removes the jolt. With only 5 linear keyframes the X reached its extreme
-       and reversed abruptly: a trajectory corner that reads as a chip hitting
-       an invisible wall. ease-in-out smoothed the corner but both curves are
-       slow at the joint, so the chip froze at each extreme. Sampling the sine
-       with 13 points and keeping time linear turns the velocity continuously:
-       the X slows down and returns without stopping, the Y keeps moving while
-       the X is at its extreme, so the velocity vector never reaches zero. No
-       corners (max turn 60 degrees vs 121 with 5 points) and no stops: that is
-       what makes the oscillation read as smooth and subtle.
-
-       Phases are spread with a 1.13 step (not consecutive) so the heights look
-       unordered: the row reads neither as a ramp nor as a travelling wave.
-       The delay is NEGATIVE so each chip starts already in its phase, with no
-       ramp-up. X amplitude is BOUNDED BY THE GAP: two neighbours at opposite
-       extremes leave 40 minus their two amplitudes, so with ampx 15..17 the
-       worst case is 40 - 17 - 15 = 8 units of air and they NEVER overlap. */
-    @keyframes float{
-      0.00%   { transform: translate(0, 0); }
-      7.69%   { transform: translate(calc(var(--ampx) * 0.4647px), calc(var(--amp) * -0.0573px)); }
-      15.38%  { transform: translate(calc(var(--ampx) * 0.823px), calc(var(--amp) * -0.216px)); }
-      23.08%  { transform: translate(calc(var(--ampx) * 0.9927px), calc(var(--amp) * -0.4397px)); }
-      30.77%  { transform: translate(calc(var(--ampx) * 0.935px), calc(var(--amp) * -0.6773px)); }
-      38.46%  { transform: translate(calc(var(--ampx) * 0.6631px), calc(var(--amp) * -0.8743px)); }
-      46.15%  { transform: translate(calc(var(--ampx) * 0.2393px), calc(var(--amp) * -0.9855px)); }
-      53.85%  { transform: translate(calc(var(--ampx) * -0.2393px), calc(var(--amp) * -0.9855px)); }
-      61.54%  { transform: translate(calc(var(--ampx) * -0.6631px), calc(var(--amp) * -0.8743px)); }
-      69.23%  { transform: translate(calc(var(--ampx) * -0.935px), calc(var(--amp) * -0.6773px)); }
-      76.92%  { transform: translate(calc(var(--ampx) * -0.9927px), calc(var(--amp) * -0.4397px)); }
-      84.62%  { transform: translate(calc(var(--ampx) * -0.823px), calc(var(--amp) * -0.216px)); }
-      92.31%  { transform: translate(calc(var(--ampx) * -0.4647px), calc(var(--amp) * -0.0573px)); }
-      100.00% { transform: translate(0, 0); }
-    }
-    @media (prefers-reduced-motion: reduce){
-      .chip{ animation: none; }
+      animation: none;
     }
   </style>
 

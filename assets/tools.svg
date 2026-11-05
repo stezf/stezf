@@ -1,22 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 310" width="100%" preserveAspectRatio="xMidYMid meet">
-  <!-- Row of TOOL chips, with skillicons.dev bordered icons embedded, a bobbing
-       bounce and a shadow.
+  <!--
 
        MEASUREMENTS: 14 chips 112 wide with a 40 gap. They do NOT fit in one row
        (14 x 112 + 13 x 40 = 2088 of 1500), so they go in TWO rows of 7. Each row
        is 1024 and both are centered on the canvas itself, (1500 - 1024) / 2 =
        238, the same axis as the Languages row in languages.svg so the two read
        as one block. The second row sits 160 units lower (112 of chip + 48 of
-       air) and the canvas is 310 tall so the shadow fits.
+       air) and the canvas is 310 tall so the shadow fits. -->
 
-       ANIMATION: each chip carries its own dur (tempo), delay (phase), amp
-       (height) and ampx (horizontal bounce) variables. See the @keyframes note
-       below on why there are thirteen keyframes. -->
-
-  <!-- TO ADD AN ICON: download it with curl from skillicons.dev, copy the inner
-       <svg> (the one with the <rect ... rx="60"/>), place it with width=112
-       height=112, give its gradients unique ids, and add the block with its x,
-       its variables and its row. -->
   <defs>
     <!-- Subtle shadow per chip: #080808 at alpha 0x30 (= 48/255 = 0.19). It sits
          in an INNER group, apart from the animated one: with the filter on the
@@ -30,47 +21,7 @@
 
   <style>
     .chip{
-      animation: float var(--dur) linear infinite;
-      animation-delay: var(--delay);
-    }
-    /* Smooth oscillation: X swings side to side (a sine) while Y rises and
-       falls, and together they draw a figure eight.
-
-       THE THIRTEEN KEYFRAMES SAMPLE A SINE, NOT A POLYGON, and that is what
-       removes the jolt. With only 5 linear keyframes the X reached its extreme
-       and reversed abruptly: a trajectory corner that reads as a chip hitting
-       an invisible wall. ease-in-out smoothed the corner but both curves are
-       slow at the joint, so the chip froze at each extreme. Sampling the sine
-       with 13 points and keeping time linear turns the velocity continuously:
-       the X slows down and returns without stopping, the Y keeps moving while
-       the X is at its extreme, so the velocity vector never reaches zero. No
-       corners (max turn 60 degrees vs 121 with 5 points) and no stops: that is
-       what makes the oscillation read as smooth and subtle.
-
-       Phases are spread with a 1.13 step (not consecutive) so the heights look
-       unordered: the row reads neither as a ramp nor as a travelling wave.
-       The delay is NEGATIVE so each chip starts already in its phase, with no
-       ramp-up. X amplitude is BOUNDED BY THE GAP: two neighbours at opposite
-       extremes leave 40 minus their two amplitudes, so with ampx 15..17 the
-       worst case is 40 - 17 - 15 = 8 units of air and they NEVER overlap. */
-    @keyframes float{
-      0.00%   { transform: translate(0, 0); }
-      7.69%   { transform: translate(calc(var(--ampx) * 0.4647px), calc(var(--amp) * -0.0573px)); }
-      15.38%  { transform: translate(calc(var(--ampx) * 0.823px), calc(var(--amp) * -0.216px)); }
-      23.08%  { transform: translate(calc(var(--ampx) * 0.9927px), calc(var(--amp) * -0.4397px)); }
-      30.77%  { transform: translate(calc(var(--ampx) * 0.935px), calc(var(--amp) * -0.6773px)); }
-      38.46%  { transform: translate(calc(var(--ampx) * 0.6631px), calc(var(--amp) * -0.8743px)); }
-      46.15%  { transform: translate(calc(var(--ampx) * 0.2393px), calc(var(--amp) * -0.9855px)); }
-      53.85%  { transform: translate(calc(var(--ampx) * -0.2393px), calc(var(--amp) * -0.9855px)); }
-      61.54%  { transform: translate(calc(var(--ampx) * -0.6631px), calc(var(--amp) * -0.8743px)); }
-      69.23%  { transform: translate(calc(var(--ampx) * -0.935px), calc(var(--amp) * -0.6773px)); }
-      76.92%  { transform: translate(calc(var(--ampx) * -0.9927px), calc(var(--amp) * -0.4397px)); }
-      84.62%  { transform: translate(calc(var(--ampx) * -0.823px), calc(var(--amp) * -0.216px)); }
-      92.31%  { transform: translate(calc(var(--ampx) * -0.4647px), calc(var(--amp) * -0.0573px)); }
-      100.00% { transform: translate(0, 0); }
-    }
-    @media (prefers-reduced-motion: reduce){
-      .chip{ animation: none; }
+      animation: none;
     }
   </style>
 
