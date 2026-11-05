@@ -19,7 +19,7 @@ I build to learn and share to grow. Every project solves a real problem and teac
 <br><br>
 
 <!-- tools.svg-->
-<img src="assets/tools.svg" width="100%" alt="Astro, VS Code, Vim, Git, Docker, Arch Linux, Linux, Obsidian, Supabase, npm, Figma, Postgres, Selenium y Vercel">
+<img src="assets/tools.svg" width="100%" alt="Astro, VS Code, Vim, Git, Docker, Arch, Linux, Obsidian, Supabase, npm, Figma, Postgres, Selenium y Vercel">
 <br><br>
 
 <!-- stats.svg-->
