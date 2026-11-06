@@ -17,9 +17,9 @@ name: Actualizar estadísticas
 
 on:
   schedule:
-    # Mondays at 06:17 UTC. The odd minute is deliberate: GitHub crons fire on
+    # everyday at 03:03 UTC. The odd minute is deliberate: GitHub crons fire on
     # the hour, and 00:00 UTC is the most congested queue of the day.
-    - cron: "17 6 * * 1"
+    - cron: "03 3 * * *"
   # To force a run from the Actions tab.
   workflow_dispatch:
   # Whenever a template or the generator changes, so a design change shows in
